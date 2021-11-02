@@ -1,0 +1,9 @@
+﻿<h1>Oi {{currentUser.name}}! </h1>
+<p>Você está gerenciando os planos.</p>
+<h3>Todos os planos registrados:</h3>
+<ul>
+    <li *ngFor="let plan of plans">
+        {{plan.name}}
+        - <a (click)="deletePlan(plan.id)" class="text-danger">Deletar</a>
+    </li>
+</ul>

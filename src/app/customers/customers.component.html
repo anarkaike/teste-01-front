@@ -1,0 +1,9 @@
+﻿<h1>Oi {{currentUser.name}}!</h1>
+<p>Você está gerenciando os clientes.</p>
+<h3>Todos os clientes registrados:</h3>
+<ul>
+    <li *ngFor="let customer of customers">
+        {{customer.email}} ({{customer.name}})
+        - <a (click)="deleteCustomer(customer.id)" class="text-danger">Deletar</a>
+    </li>
+</ul>

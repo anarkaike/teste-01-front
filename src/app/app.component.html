@@ -1,0 +1,38 @@
+﻿<!-- nav -->
+<nav class="navbar navbar-expand navbar-dark bg-dark" *ngIf="currentUser">
+    <div class="container-fluid">
+        <div class="navbar-nav">
+            <a class="nav-item nav-link" routerLink="/">Dasboard</a>
+            <a class="nav-item nav-link" routerLink="/users">Usuários</a>
+            <a class="nav-item nav-link" routerLink="/customers">Clientes</a>
+            <a class="nav-item nav-link" routerLink="/plans">Planos</a>
+        </div>
+        <div class="navbar-nav">
+            <a class="nav-item nav-link right" style="margin-right: 50px;">Olá {{currentUser.name}}!</a>
+            <a class="nav-item nav-link" (click)="logout()">Sair</a>
+        </div>
+    </div>
+</nav>
+
+<!-- main app container -->
+<div class="jumbotron">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6 offset-sm-3">
+                <alert></alert>
+                <br /><br />
+                <router-outlet></router-outlet>
+                <br /><br />
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- credits -->
+<div class="text-center">
+    <p>
+        <a href="https://www.linkedin.com/in/junioalmeida/" target="_blank">Junio de Almeida Vitorino</a>
+        |
+        <a href="https://origoenergia.com.br/" target="_top">origoenergia.com.br</a>
+    </p>
+</div>
