@@ -15,11 +15,11 @@ export class PlanService {
         return this.http.get(`${config.apiUrl}/plans/${id}`);
     }
 
-    insert(plan: Plan) {
+    insert(plan) {
         return this.http.post(`${config.apiUrl}/plans`, plan);
     }
 
-    update(plan: Plan) {
+    update(plan) {
         return this.http.put(`${config.apiUrl}/plans`, plan);
     }
 

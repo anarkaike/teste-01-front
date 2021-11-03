@@ -1,9 +1,52 @@
-﻿<h1>Oi {{currentUser.name}}! </h1>
-<p>Você está gerenciando os planos.</p>
-<h3>Todos os planos registrados:</h3>
-<ul>
-    <li *ngFor="let plan of plans">
-        {{plan.name}}
-        - <a (click)="deletePlan(plan.id)" class="text-danger">Deletar</a>
-    </li>
-</ul>
+﻿<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <h1 class="text-center">Gerenciando Planos</h1>
+            <br />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+
+            <form class="row g-3" [formGroup]="crudForm" (ngSubmit)="onSubmit()">
+                <input type="hidden" id="id" formControlName="id" name="id" />
+                <div class="col-md-6">
+                    <label for="name" class="form-label">Nome</label>
+                    <input type="text" formControlName="name"  class="form-control" id="name" [ngClass]="{ 'is-invalid': submitted && f.name.errors }">
+                </div>
+                <div class="col-md-6"></div>
+                <div class="col-md-6">
+                    <label for="price" class="form-label">Price</label>
+                    <input type="text" formControlName="price" class="form-control" id="price" [ngClass]="{ 'is-invalid': submitted && f.price.errors }">
+                </div>
+                <div class="col-md-6"></div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">Inserir</button>
+                </div>
+            </form>
+
+        </div>
+        <div class="col">
+            <table class="table table-striped table-hover table-sm">
+                <thead>
+                <tr>
+                    <th colspan="3">Todos os planos registrados:</th>
+                </tr>
+                <tr>
+                    <th width="10%" scope="col" style="text-align: center !important;">#</th>
+                    <th width="75%" scope="col">Nome</th>
+                    <th width="15%" scope="col"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let plan of plans">
+                    <td align="center">{{plan.id}}</td>
+                    <td>{{plan.name}}</td>
+                    <td><a (click)="deletePlan(plan.id)" class="text-danger">Deletar</a></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
