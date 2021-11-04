@@ -20,7 +20,7 @@ export class PlanService {
     }
 
     update(plan) {
-        return this.http.put(`${config.apiUrl}/plans`, plan);
+        return this.http.put(`${config.apiUrl}/plans/${plan.id}`, plan);
     }
 
     delete(id: number) {

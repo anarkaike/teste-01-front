@@ -15,6 +15,8 @@ export class PlansComponent implements OnInit {
     loading = false;
     submitted = false;
     returnUrl: string;
+    editedPlan;
+    editedPlan_name;
 
     constructor(
         private formBuilder: FormBuilder,
@@ -23,6 +25,7 @@ export class PlansComponent implements OnInit {
         private alertService: AlertService
     ) {
         this.currentUser = this.authenticationService.currentUserValue;
+        this.editedPlan = false;
 
     }
 
@@ -31,8 +34,9 @@ export class PlansComponent implements OnInit {
         this.loadAllPlans();
 
         this.crudForm = this.formBuilder.group({
-            name: ['', Validators.required],
-            price: ['', Validators.required],
+            id: [''],
+            name: [''],
+            price: [''],
         });
 
     }
@@ -52,30 +56,60 @@ export class PlansComponent implements OnInit {
             .subscribe(plans => this.plans = plans['data'] );
     }
 
+    getPlan(id: number) {
+        this.planService.get(id)
+            .pipe(first())
+            .subscribe(plan => { console.log('PLAN',plan['data']); this.editedPlan = plan['data']; this.crudForm.updateValueAndValidity(); this.crudForm.clearValidators(); } ,
+                error => {
+                    //this.alertService.error(error);
+                    //this.loading = false;
+                });
+    }
+
     onSubmit() {
-
         this.submitted = true;
-
-        // stop here if form is invalid
-        if (this.crudForm.invalid) {
-            return;
-        }
-
+        this.loading = true;
         this.alertService.clear(); // reset alerts on submit
 
+        var plan = {
+            name: window.document.getElementById('name')['value'],
+            price: window.document.getElementById('price')['value']
+        };
+        if (window.document.getElementById('action')['value'] == 'edit') {
+            plan['id'] = window.document.getElementById('id')['value'];
+            this.update(plan);
+        } else {
+            this.insert(plan);
+        }
 
-        this.planService.insert({ name: this.f.name.value, price: this.f.price.value })
+    }
+
+    insert(plan) {
+        this.planService.insert(plan)
             .pipe(first())
             .subscribe(
-            data => {
-                console.log('data', data);
-                //this.router.navigate([this.returnUrl]);
-                this.loadAllPlans();
-                this.crudForm.reset();
-            },
-            error => {
-                this.alertService.error(error);
-                this.loading = false;
-            });
+                data => {
+                    this.loadAllPlans();
+                    this.crudForm.reset();
+                },
+                error => {
+                    this.alertService.error(error);
+                    this.loading = false;
+                });
+    }
+
+    update(plan) {
+        this.planService.update(plan)
+            .pipe(first())
+            .subscribe(
+                data => {
+                    this.loadAllPlans();
+                    this.crudForm.reset();
+                    this.editedPlan = false;
+                },
+                error => {
+                    this.alertService.error(error);
+                    this.loading = false;
+                });
     }
 }

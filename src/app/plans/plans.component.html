@@ -7,21 +7,29 @@
     </div>
     <div class="row">
         <div class="col">
-
+            <h5 [ngStyle]="{'display': editedPlan == false ? 'block' : 'none'}">Cadastre um novo plano</h5>
+            <h5 [ngStyle]="{'display': !editedPlan == false ? 'block' : 'none'}">Atualize os dados do plano</h5>
             <form class="row g-3" [formGroup]="crudForm" (ngSubmit)="onSubmit()">
-                <input type="hidden" id="id" formControlName="id" name="id" />
+                <input type="hidden" [(ngModel)]="editedPlan_id" id="id" value="{{this.editedPlan.id}}" formControlName="id" name="id" />
                 <div class="col-md-6">
-                    <label for="name" class="form-label">Nome</label>
-                    <input type="text" formControlName="name"  class="form-control" id="name" [ngClass]="{ 'is-invalid': submitted && f.name.errors }">
+                    <label for="name" class="form-label">Nome:</label>
+                    <input type="text" [(ngModel)]="editedPlan_name" value="{{this.editedPlan.name}}" formControlName="name"  class="form-control" id="name">
                 </div>
                 <div class="col-md-6"></div>
                 <div class="col-md-6">
-                    <label for="price" class="form-label">Price</label>
-                    <input type="text" formControlName="price" class="form-control" id="price" [ngClass]="{ 'is-invalid': submitted && f.price.errors }">
+                    <label for="price" class="form-label">Preço: <span style="color:#666;">(Ex.: 25.67)</span></label>
+                    <input type="text" [(ngModel)]="editedPlan_price" value="{{this.editedPlan.price}}"  formControlName="price" class="form-control" id="price">
                 </div>
                 <div class="col-md-6"></div>
                 <div class="col-12">
-                    <button type="submit" class="btn btn-primary">Inserir</button>
+                    <input type="hidden" [(ngModel)]="editedPlan_action" id="action" name="action" value="{{this.editedPlan==false ? 'new' : 'edit'}}" />
+                    <button type="submit" class="btn btn-primary" style="float:left; margin-right:10px;">
+                        <span [style]="{display: this.editedPlan==false ? 'block' : 'none'}">Inserir</span>
+                        <span [style]="{display: !this.editedPlan==false ? 'block' : 'none'}">Atualizar</span>
+                    </button>
+                    <button type="button" class="btn btn-secondary float-left" [style]="{display: !this.editedPlan==false ? 'block' : 'none'}" (click)="this.editedPlan=false;">
+                        Cancelar
+                    </button>
                 </div>
             </form>
 
@@ -34,14 +42,16 @@
                 </tr>
                 <tr>
                     <th width="10%" scope="col" style="text-align: center !important;">#</th>
-                    <th width="75%" scope="col">Nome</th>
+                    <th width="55%" scope="col">Nome</th>
+                    <th width="20%" scope="col">Price</th>
                     <th width="15%" scope="col"></th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr *ngFor="let plan of plans">
-                    <td align="center">{{plan.id}}</td>
-                    <td>{{plan.name}}</td>
+                    <td (click)="getPlan(plan.id);" style="cursor: pointer;" align="center">{{plan.id}}</td>
+                    <td (click)="getPlan(plan.id);" style="cursor: pointer;">{{plan.name}}</td>
+                    <td (click)="getPlan(plan.id);" style="cursor: pointer;">{{plan.price}}</td>
                     <td><a (click)="deletePlan(plan.id)" class="text-danger">Deletar</a></td>
                 </tr>
                 </tbody>
