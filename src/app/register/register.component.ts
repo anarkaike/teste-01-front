@@ -1,6 +1,6 @@
 ﻿import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import { first } from 'rxjs/operators';
 
 import { AlertService, UserService, AuthenticationService } from '@/_services';
@@ -18,41 +18,40 @@ export class RegisterComponent implements OnInit {
         private userService: UserService,
         private alertService: AlertService
     ) {
-        // redirect to home if already logged in
+        // redirect to initial page if already logged in
         if (this.authenticationService.currentUserValue) {
-            this.router.navigate(['/']);
+            this.router.navigate(['/customers']);
         }
     }
 
     ngOnInit() {
-        this.registerForm = this.formBuilder.group({
-            firstName: ['', Validators.required],
-            lastName: ['', Validators.required],
-            username: ['', Validators.required],
-            password: ['', [Validators.required, Validators.minLength(6)]]
+        this.registerForm =new FormGroup({
+            name: new FormControl(),
+            email: new FormControl(),
+            password: new FormControl(),
         });
     }
 
-    // convenience getter for easy access to form fields
-    get f() { return this.registerForm.controls; }
+    get f() { return this.registerForm.controls; } // convenience getter for easy access to form fields
 
     onSubmit() {
-        this.submitted = true;
-
-        // reset alerts on submit
-        this.alertService.clear();
-
-        // stop here if form is invalid
-        if (this.registerForm.invalid) {
+        this.submitted = this.loading = true;
+        this.alertService.clear(); // reset alerts on submit
+        if (this.registerForm.invalid) { // stop here if form is invalid
             return;
         }
 
-        this.loading = true;
+        var customer = {
+            name: $('name').val(),
+            email: $('email').val(),
+            password: $('password').val(),
+        };
+
         this.userService.register(this.registerForm.value)
             .pipe(first())
             .subscribe(
                 data => {
-                    this.alertService.success('Registration successful', true);
+                    this.alertService.success(data['message'], true);
                     this.router.navigate(['/login']);
                 },
                 error => {

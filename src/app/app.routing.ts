@@ -1,6 +1,5 @@
 ﻿import { Routes, RouterModule } from '@angular/router';
 
-import { HomeComponent } from './home';
 import { LoginComponent } from './login';
 import { RegisterComponent } from './register';
 import { UsersComponent } from './users';
@@ -9,11 +8,10 @@ import { PlansComponent } from './plans';
 import { AuthGuard } from './_helpers';
 
 const routes: Routes = [
-    { path: '', component: HomeComponent, canActivate: [AuthGuard] },
     { path: 'login', component: LoginComponent },
     { path: 'register', component: RegisterComponent },
+    { path: 'customers', component: CustomersComponent, canActivate: [AuthGuard] }, // Initial Page
     { path: 'users', component: UsersComponent, canActivate: [AuthGuard] },
-    { path: 'customers', component: CustomersComponent, canActivate: [AuthGuard] },
     { path: 'plans', component: PlansComponent, canActivate: [AuthGuard] },
 
     // otherwise redirect to home

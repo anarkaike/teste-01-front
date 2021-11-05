@@ -1,22 +1,19 @@
 ﻿import { Component, OnInit } from '@angular/core';
 import { first } from 'rxjs/operators';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 
 import { User } from '@/_models';
-import { Plan } from '@/_models/plan';
-import {AlertService, AuthenticationService, UserService} from '@/_services';
-import { PlanService } from '@/_services/plan.service';
+import { AlertService, AuthenticationService, PlanService } from '@/_services';
 
 @Component({ templateUrl: 'plans.component.html' })
 export class PlansComponent implements OnInit {
-    crudForm: FormGroup;
+    crudFormPlan: FormGroup;
     currentUser: User;
     plans = [];
     loading = false;
     submitted = false;
     returnUrl: string;
     editedPlan;
-    editedPlan_name;
 
     constructor(
         private formBuilder: FormBuilder,
@@ -31,20 +28,24 @@ export class PlansComponent implements OnInit {
 
     ngOnInit() {
         this.loadAllPlans();
-        this.crudForm = this.formBuilder.group({
-            id: [''],
-            name: [''],
-            price: [''],
+        this.crudFormPlan =new FormGroup({
+            id: new FormControl(),
+            name: new FormControl(),
+            price: new FormControl(),
         });
     }
 
-    // convenience getter for easy access to form fields
-    get f() { return this.crudForm.controls; }
-
     deletePlan(id: number) {
-        this.planService.delete(id)
-            .pipe(first())
-            .subscribe(() => this.loadAllPlans());
+        if (confirm('Deseja realmente deletar este plano?')) {
+            this.planService.delete(id)
+                .pipe(first())
+                .subscribe(
+                    () => this.reset(),
+                    error => {
+                        this.alertService.error(error);
+                        this.loading = false;
+                    });
+        }
     }
 
     private loadAllPlans() {
@@ -56,12 +57,17 @@ export class PlansComponent implements OnInit {
     getPlan(id: number) {
         this.planService.get(id)
             .pipe(first())
-            .subscribe(plan => { console.log('PLAN',plan['data']); this.editedPlan = plan['data']; this.crudForm.updateValueAndValidity(); this.crudForm.clearValidators(); } ,
+            .subscribe(
+                plan => {
+                    this.editedPlan = plan['data'];
+                } ,
                 error => {
-                    //this.alertService.error(error);
-                    //this.loading = false;
+                    this.alertService.error(error);
+                    this.loading = false;
                 });
     }
+
+    get f() { return this.crudFormPlan.controls; } // convenience getter for easy access to form fields
 
     onSubmit() {
         this.submitted = true;
@@ -69,44 +75,42 @@ export class PlansComponent implements OnInit {
         this.alertService.clear(); // reset alerts on submit
 
         var plan = {
-            name: window.document.getElementById('name')['value'],
-            price: window.document.getElementById('price')['value']
+            name: $('#name').val(),
+            price: $('#price').val()
         };
-        if (window.document.getElementById('action')['value'] == 'edit') {
-            plan['id'] = window.document.getElementById('id')['value'];
+        if ($('#action').val() == 'edit') {
+            plan['id'] = $('#id').val();
             this.update(plan);
         } else {
             this.insert(plan);
         }
-
     }
 
-    insert(plan) {
+    private insert(plan) {
         this.planService.insert(plan)
             .pipe(first())
             .subscribe(
-                data => {
-                    this.loadAllPlans();
-                    this.crudForm.reset();
-                },
+                data => this.reset(),
                 error => {
                     this.alertService.error(error);
                     this.loading = false;
                 });
     }
 
-    update(plan) {
+    private update(plan) {
         this.planService.update(plan)
             .pipe(first())
             .subscribe(
-                data => {
-                    this.loadAllPlans();
-                    this.crudForm.reset();
-                    this.editedPlan = false;
-                },
+                data => this.reset(),
                 error => {
                     this.alertService.error(error);
                     this.loading = false;
                 });
+    }
+
+    private reset() {
+        this.loadAllPlans();
+        this.crudFormPlan.reset();
+        this.editedPlan = this.loading = false;
     }
 }

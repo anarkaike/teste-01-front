@@ -54,16 +54,15 @@ export class UsersComponent implements OnInit {
     getUser(id: number) {
         this.userService.get(id)
             .pipe(first())
-            .subscribe(user => { console.log('CUSTOMER',user['data']); this.editedUser = user['data'];  } ,
+            .subscribe(
+                user => this.editedUser = user['data'],
                 error => {
-                    //this.alertService.error(error);
-                    //this.loading = false;
+                    this.alertService.error(error);
+                    this.loading = false;
                 });
     }
 
-    get(name) {
-        return window.document.getElementById(name)['value'];
-    }
+    get f() { return this.crudFormUser.controls; } // convenience getter for easy access to form fields
 
     onSubmit() {
         this.submitted = true;
@@ -71,12 +70,12 @@ export class UsersComponent implements OnInit {
         this.alertService.clear(); // reset alerts on submit
 
         var user = {
-            name: this.get('name'),
-            email: this.get('email'),
-            password: this.get('password'),
+            name: $('#name').val(),
+            email: $('#email').val(),
+            password: $('#password').val(),
         };
-        if (this.get('action') == 'edit') {
-            user['id'] = this.get('id');
+        if ($('#action').val() == 'edit') {
+            user['id'] = $('#id').val();
             this.update(user);
         } else {
             this.insert(user);
@@ -84,32 +83,32 @@ export class UsersComponent implements OnInit {
 
     }
 
-    insert(user) {
+    private insert(user) {
         this.userService.register(user)
             .pipe(first())
             .subscribe(
-                data => {
-                    this.loadAllUsers();
-                    this.crudFormUser.reset();
-                },
+                data => this.reset(),
                 error => {
                     this.alertService.error(error);
                     this.loading = false;
                 });
     }
 
-    update(user) {
+    private update(user) {
         this.userService.update(user)
             .pipe(first())
             .subscribe(
-                data => {
-                    this.loadAllUsers();
-                    this.crudFormUser.reset();
-                    this.editedUser = false;
-                },
+                data => this.reset(),
                 error => {
                     this.alertService.error(error);
                     this.loading = false;
                 });
     }
+
+    private reset() {
+        this.loadAllUsers();
+        this.crudFormUser.reset();
+        this.editedUser = this.loading = false;
+    }
+
 }

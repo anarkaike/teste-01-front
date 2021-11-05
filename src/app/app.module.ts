@@ -6,7 +6,6 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { appRoutingModule } from './app.routing';
 import { JwtInterceptor, ErrorInterceptor } from './_helpers';
 import { AppComponent } from './app.component';
-import { HomeComponent } from './home';
 import { UsersComponent } from './users';
 import { CustomersComponent } from './customers';
 import { PlansComponent } from './plans';
@@ -27,7 +26,6 @@ console.log(`jQuery version: ${$.fn.jquery}`);
     ],
     declarations: [
         AppComponent,
-        HomeComponent,
         UsersComponent,
         CustomersComponent,
         PlansComponent,

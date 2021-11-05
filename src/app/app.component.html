@@ -2,7 +2,6 @@
 <nav class="navbar navbar-expand navbar-dark bg-dark" *ngIf="currentUser">
     <div class="container-fluid">
         <div class="navbar-nav">
-            <a class="nav-item nav-link" routerLink="/">Dasboard</a>
             <a class="nav-item nav-link" routerLink="/users">Usuários</a>
             <a class="nav-item nav-link" routerLink="/customers">Clientes</a>
             <a class="nav-item nav-link" routerLink="/plans">Planos</a>
@@ -19,8 +18,8 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-12">
-                <alert></alert>
                 <br />
+                <alert></alert>
                 <router-outlet></router-outlet>
                 <br /><br />
             </div>

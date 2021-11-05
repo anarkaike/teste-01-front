@@ -1,15 +1,9 @@
 ﻿import { Component, OnInit } from '@angular/core';
 import { first } from 'rxjs/operators';
-import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 
 import { User } from '@/_models';
-import { AlertService, AuthenticationService, UserService } from '@/_services';
-import { Customer } from '@/_models/customer';
-import { CustomerService } from '@/_services/customer.service';
-import { PlanService } from '@/_services/plan.service';
-
-import jQueryFactory = require('jquery');
-const jQuery = jQueryFactory(window, true);
+import { AlertService, AuthenticationService, CustomerService, PlanService } from '@/_services';
 
 @Component({ templateUrl: 'customers.component.html' })
 export class CustomersComponent implements OnInit {
@@ -21,7 +15,6 @@ export class CustomersComponent implements OnInit {
     submitted = false;
     returnUrl: string;
     editedCustomer;
-    editedCustomer_name;
 
     constructor(
         private formBuilder: FormBuilder,
@@ -47,17 +40,21 @@ export class CustomersComponent implements OnInit {
             birthday: new FormControl(),
             plans: new FormControl(),
         });
-
-
     }
 
-    // convenience getter for easy access to form fields
-    get f() { return this.crudFormCustomer.controls; }
-
     deleteCustomer(id: number) {
-        this.customerService.delete(id)
-            .pipe(first())
-            .subscribe(() => this.loadAllCustomers());
+        if (confirm('Deseja realmente deletar este cliente?')) {
+            this.alertService.clear(); // reset alerts on submit
+            this.customerService.delete(id)
+                .pipe(first())
+                .subscribe(
+                    () => this.reset(),
+                    error => {
+                        this.alertService.error(error);
+                        this.loading = false;
+                    }
+                );
+        }
     }
 
     private loadAllCustomers() {
@@ -81,23 +78,17 @@ export class CustomersComponent implements OnInit {
                     this.setPlansInForm('.plans', customer['data']['plans']);
                 },
                 error => {
-                    //this.alertService.error(error);
-                    //this.loading = false;
+                    this.alertService.error(error);
+                    this.loading = false;
                 });
     }
 
-    get(name) {
-        return window.document.getElementById(name)['value'];
-    }
-
     getPlansInForm(cbSelector) {
-        var array = []
-        var checkboxes = document.querySelectorAll(cbSelector+ '[type=checkbox]:checked')
-
-        for (var i = 0; i < checkboxes['length']; i++) {
-            array.push(checkboxes[i]['value'])
-        }
-        return array;
+        var ids = []
+        $(cbSelector+ '[type=checkbox]:checked').each(function(){
+            ids.push($(this).val());
+        });
+        return ids;
     }
 
     setPlansInForm(cbSelector, values) {
@@ -107,22 +98,24 @@ export class CustomersComponent implements OnInit {
         }
     }
 
+    get f() { return this.crudFormCustomer.controls; } // convenience getter for easy access to form fields
+
     onSubmit() {
         this.submitted = true;
         this.loading = true;
         this.alertService.clear(); // reset alerts on submit
 
         var customer = {
-            name: this.get('name'),
-            email: this.get('email'),
-            phone: this.get('phone'),
-            state: this.get('state'),
-            city: this.get('city'),
-            birthday: this.get('birthday'),
+            name: $('#name').val(),
+            email: $('#email').val(),
+            phone: $('#phone').val(),
+            state: $('#state').val(),
+            city: $('#city').val(),
+            birthday: $('#birthday').val(),
             plans: this.getPlansInForm('.plans'),
         };
-        if (this.get('action') == 'edit') {
-            customer['id'] = this.get('id');
+        if ($('#action').val() == 'edit') {
+            customer['id'] = $('#id').val();
             this.update(customer);
         } else {
             this.insert(customer);
@@ -130,37 +123,32 @@ export class CustomersComponent implements OnInit {
 
     }
 
-    insert(customer) {
+    private insert(customer) {
         this.customerService.insert(customer)
             .pipe(first())
             .subscribe(
-                data => {
-                    this.loadAllCustomers();
-                    this.reset();
-                },
+                data => this.reset(),
                 error => {
                     this.alertService.error(error);
                     this.loading = false;
                 });
     }
 
-    update(customer) {
+    private update(customer) {
         this.customerService.update(customer)
             .pipe(first())
             .subscribe(
-                data => {
-                    this.loadAllCustomers();
-                    this.reset();
-                },
-                error => {
+                data => this.reset()
+                ,error => {
                     this.alertService.error(error);
                     this.loading = false;
                 });
     }
 
-    reset() {
+    private reset() {
+        this.loadAllCustomers();
         this.crudFormCustomer.reset();
-        this.editedCustomer = false;
+        this.editedCustomer = this.loading = false;
         $('.plans').prop('checked', false);
     }
 }
