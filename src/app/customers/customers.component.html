@@ -42,13 +42,22 @@
                     <input type="text" [ngModelOptions]="{standalone: true}" [(ngModel)]="editedCustomer_state" value="{{this.editedCustomer.state}}"  formControlName="state" class="form-control" id="state">
                 </div>
 
+                <div class="col-md-12">
+                    <div *ngFor="let plan of plans" class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <label class="btn btn-secondary active" for="plan_{{plan.id}}" style="margin-right:10px; margin-bottom:10px;">
+                            <input type="checkbox" value="{{plan.id}}" ng-model="plans" name="plans" id="plan_{{plan.id}}" class="form-check-input plans" />
+                            {{plan.name}}
+                        </label>
+                    </div>
+                </div>
+
                 <div class="col-12">
                     <input type="hidden" [ngModelOptions]="{standalone: true}" [(ngModel)]="editedCustomer_action" id="action" name="action" value="{{this.editedCustomer==false ? 'new' : 'edit'}}" />
                     <button type="submit" class="btn btn-primary" style="float:left; margin-right:10px;">
                         <span [style]="{display: this.editedCustomer==false ? 'block' : 'none'}">Inserir</span>
                         <span [style]="{display: !this.editedCustomer==false ? 'block' : 'none'}">Atualizar</span>
                     </button>
-                    <button type="button" class="btn btn-secondary float-left" [style]="{display: !this.editedCustomer==false ? 'block' : 'none'}" (click)="this.editedCustomer=false;">
+                    <button type="button" class="btn btn-secondary float-left" [style]="{display: !this.editedCustomer==false ? 'block' : 'none'}" (click)="this.reset();">
                         Cancelar
                     </button>
                 </div>

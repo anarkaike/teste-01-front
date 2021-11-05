@@ -8,7 +8,8 @@
             "@/*": [
                 "app/*"
             ]
-        }
+        },
+        "types": ["jquery"] // add here
     },
     "angularCompilerOptions": {
         "enableIvy": true

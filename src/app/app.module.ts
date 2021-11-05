@@ -14,6 +14,9 @@ import { LoginComponent } from './login';
 import { RegisterComponent } from './register';
 import { AlertComponent } from './_components';
 
+declare var $: any;
+console.log(`jQuery version: ${$.fn.jquery}`);
+
 @NgModule({
     imports: [
         BrowserModule,
