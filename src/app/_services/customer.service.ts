@@ -15,12 +15,12 @@ export class CustomerService {
         return this.http.get(`${config.apiUrl}/customers/${id}`);
     }
 
-    insert(customer: Customer) {
+    insert(customer) {
         return this.http.post(`${config.apiUrl}/customers`, customer);
     }
 
-    update(customer: Customer) {
-        return this.http.put(`${config.apiUrl}/customers`, customer);
+    update(customer) {
+        return this.http.put(`${config.apiUrl}/customers/${customer.id}`, customer);
     }
 
     delete(id: number) {

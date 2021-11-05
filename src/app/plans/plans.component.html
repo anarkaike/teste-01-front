@@ -9,7 +9,7 @@
         <div class="col">
             <h5 [ngStyle]="{'display': editedPlan == false ? 'block' : 'none'}">Cadastre um novo plano</h5>
             <h5 [ngStyle]="{'display': !editedPlan == false ? 'block' : 'none'}">Atualize os dados do plano</h5>
-            <form class="row g-3" [formGroup]="crudForm" (ngSubmit)="onSubmit()">
+            <form class="row g-3" [formGroup]="crudForm" (ngSubmit)="onSubmit()" style="max-width: 90%;">
                 <input type="hidden" [(ngModel)]="editedPlan_id" id="id" value="{{this.editedPlan.id}}" formControlName="id" name="id" />
                 <div class="col-md-6">
                     <label for="name" class="form-label">Nome:</label>

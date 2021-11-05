@@ -1,9 +1,85 @@
-﻿<h1>Oi {{currentUser.name}}!</h1>
-<p>Você está gerenciando os clientes.</p>
-<h3>Todos os clientes registrados:</h3>
-<ul>
-    <li *ngFor="let customer of customers">
-        {{customer.email}} ({{customer.name}})
-        - <a (click)="deleteCustomer(customer.id)" class="text-danger">Deletar</a>
-    </li>
-</ul>
+﻿<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <h1 class="text-center">Gerenciando Clientes</h1>
+            <br />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <h5 [ngStyle]="{'display': editedCustomer == false ? 'block' : 'none'}">Cadastre um novo cliente</h5>
+            <h5 [ngStyle]="{'display': !editedCustomer == false ? 'block' : 'none'}">Atualize os dados do cliente</h5>
+            <form class="row g-3" [formGroup]="crudFormCustomer" (ngSubmit)="onSubmit()"  [ngModelOptions]="{standalone: true}" style="max-width: 90%;">
+                <input type="hidden"  [ngModelOptions]="{standalone: true}" [(ngModel)]="editedCustomer_id" id="id" value="{{this.editedCustomer.id}}" formControlName="id" name="id" />
+
+                <div class="col-md-12">
+                    <label for="name" class="form-label">Nome:</label>
+                    <input type="text"  [ngModelOptions]="{standalone: true}" [(ngModel)]="editedCustomer_name" value="{{this.editedCustomer.name}}" formControlName="name"  class="form-control" id="name">
+                </div>
+
+                <div class="col-md-12">
+                    <label for="email" class="form-label">Email: </label>
+                    <input type="text" [ngModelOptions]="{standalone: true}" [(ngModel)]="editedCustomer_email" value="{{this.editedCustomer.email}}"  formControlName="email" class="form-control" id="email">
+                </div>
+
+                <div class="col-md-6">
+                    <label for="birthday" class="form-label">Aniversário: </label>
+                    <input type="text" [ngModelOptions]="{standalone: true}" [(ngModel)]="editedCustomer_birthday" value="{{this.editedCustomer.birthday}}"  formControlName="birthday" class="form-control" id="birthday">
+                </div>
+
+                <div class="col-md-6">
+                    <label for="phone" class="form-label">Telefone: </label>
+                    <input type="text" [(ngModel)]="editedCustomer_phone" value="{{this.editedCustomer.phone}}"  formControlName="phone" class="form-control" id="phone">
+                </div>
+
+                <div class="col-md-6">
+                    <label for="city" class="form-label">Cidade: </label>
+                    <input type="text" [ngModelOptions]="{standalone: true}" [(ngModel)]="editedCustomer_city" value="{{this.editedCustomer.city}}"  formControlName="city" class="form-control" id="city">
+                </div>
+
+                <div class="col-md-6">
+                    <label for="state" class="form-label">Estado: </label>
+                    <input type="text" [ngModelOptions]="{standalone: true}" [(ngModel)]="editedCustomer_state" value="{{this.editedCustomer.state}}"  formControlName="state" class="form-control" id="state">
+                </div>
+
+                <div class="col-12">
+                    <input type="hidden" [ngModelOptions]="{standalone: true}" [(ngModel)]="editedCustomer_action" id="action" name="action" value="{{this.editedCustomer==false ? 'new' : 'edit'}}" />
+                    <button type="submit" class="btn btn-primary" style="float:left; margin-right:10px;">
+                        <span [style]="{display: this.editedCustomer==false ? 'block' : 'none'}">Inserir</span>
+                        <span [style]="{display: !this.editedCustomer==false ? 'block' : 'none'}">Atualizar</span>
+                    </button>
+                    <button type="button" class="btn btn-secondary float-left" [style]="{display: !this.editedCustomer==false ? 'block' : 'none'}" (click)="this.editedCustomer=false;">
+                        Cancelar
+                    </button>
+                </div>
+            </form>
+
+        </div>
+        <div class="col">
+            <table class="table table-striped table-hover table-sm">
+                <thead>
+                <tr>
+                    <th colspan="3">Todos os customeros registrados:</th>
+                </tr>
+                <tr>
+                    <th width="5%" scope="col" style="text-align: center !important;">#</th>
+                    <th width="30%" scope="col">Nome</th>
+                    <th width="35%" scope="col">Email</th>
+                    <th width="20%" scope="col">Telefone</th>
+                    <th width="10%" scope="col"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let customer of customers">
+                    <td (click)="getCustomer(customer.id);" style="cursor: pointer;" align="center">{{customer.id}}</td>
+                    <td (click)="getCustomer(customer.id);" style="cursor: pointer;">{{customer.name}}</td>
+                    <td (click)="getCustomer(customer.id);" style="cursor: pointer;">{{customer.email}}</td>
+                    <td (click)="getCustomer(customer.id);" style="cursor: pointer;">{{customer.phone}}</td>
+                    <td><a (click)="deleteCustomer(customer.id)" class="text-danger">Deletar</a></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+

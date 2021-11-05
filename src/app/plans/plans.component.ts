@@ -30,15 +30,12 @@ export class PlansComponent implements OnInit {
     }
 
     ngOnInit() {
-
         this.loadAllPlans();
-
         this.crudForm = this.formBuilder.group({
             id: [''],
             name: [''],
             price: [''],
         });
-
     }
 
     // convenience getter for easy access to form fields
